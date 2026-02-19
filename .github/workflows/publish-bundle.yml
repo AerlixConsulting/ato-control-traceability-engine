@@ -1,0 +1,39 @@
+name: Publish Audit Bundle Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  bundle:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Build bundle
+        run: |
+          python -m atoevidence bundle controls/control-mapping.yaml
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: audit-bundle-${{ github.run_number }}
+          name: Audit Evidence Bundle ${{ github.run_number }}
+          body: |
+            Automated audit bundle release (portfolio reference).
+            Includes MANIFEST.json with SHA256 hashes.
+          files: |
+            dist/*.zip

@@ -1,0 +1,40 @@
+name: Generate Auditor Artifacts
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 1" # weekly Monday 09:00 UTC
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Generate evidence index + status + freshness + OSCAL
+        run: |
+          python -m atoevidence build-index controls/control-mapping.yaml
+          python -m atoevidence status-report controls/control-mapping.yaml
+          python -m atoevidence freshness controls/control-mapping.yaml
+          python -m atoevidence oscal controls/control-mapping.yaml
+
+      - name: Upload generated artifacts (as workflow artifacts)
+        uses: actions/upload-artifact@v4
+        with:
+          name: auditor-generated-artifacts
+          path: |
+            audit-support/evidence-index.generated.md
+            monitoring/control-status-report.generated.md
+            metrics/evidence-freshness.generated.md
+            generated/oscal/
