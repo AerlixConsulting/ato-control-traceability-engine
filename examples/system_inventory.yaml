@@ -1,0 +1,84 @@
+# System Component Inventory
+# ATO Control Traceability Engine — Example
+# SPDX-License-Identifier: Apache-2.0
+
+system_id: ato-demo-system
+system_name: ATO Demo Information System — Healthcare Analytics Platform
+
+components:
+
+  - id: web-frontend
+    name: Web Application Frontend
+    type: web_application
+    owner: Platform Engineering Team
+    description: >
+      React-based single-page application served via CloudFront CDN.
+      Handles all user interactions with the analytics dashboard.
+    tags: [frontend, public-facing, ui, cloudfront]
+
+  - id: api-gateway
+    name: API Gateway
+    type: api_gateway
+    owner: Platform Engineering Team
+    description: >
+      AWS API Gateway (REST) acting as the single ingress point for all
+      backend service calls.  Enforces TLS 1.2+, rate limiting, and
+      request validation.
+    tags: [network, api, ingress, tls]
+
+  - id: auth-service
+    name: Authentication and Authorization Service
+    type: microservice
+    owner: Security Engineering Team
+    description: >
+      OAuth 2.0 / OIDC authentication microservice backed by AWS Cognito.
+      Issues short-lived JWTs; enforces MFA for all privileged accounts.
+    tags: [auth, identity, oauth2, mfa, jwt]
+
+  - id: analytics-service
+    name: Analytics Processing Service
+    type: microservice
+    owner: Data Engineering Team
+    description: >
+      Python FastAPI service that executes analytical queries against the
+      data warehouse.  Runs in an isolated ECS Fargate task with no direct
+      internet egress.
+    tags: [analytics, fargate, backend]
+
+  - id: data-warehouse
+    name: Redshift Data Warehouse
+    type: database
+    owner: Data Engineering Team
+    description: >
+      Amazon Redshift cluster storing de-identified PHI aggregates.
+      Encrypted at rest with AWS KMS CMK; VPC-private; access via IAM roles.
+    tags: [data, storage, redshift, encrypted, phi-adjacent]
+
+  - id: primary-db
+    name: PostgreSQL Application Database
+    type: database
+    owner: Platform Engineering Team
+    description: >
+      Amazon RDS PostgreSQL 15 instance holding application state.
+      Multi-AZ deployment; encrypted at rest; daily automated backups.
+    tags: [data, storage, rds, postgresql, encrypted, backup]
+
+  - id: log-aggregator
+    name: Centralised Log Aggregation Service
+    type: monitoring
+    owner: Operations Team
+    description: >
+      OpenSearch-based log aggregation (AWS OpenSearch Service).
+      Collects VPC flow logs, CloudTrail events, application logs, and
+      container stdout/stderr.  Retention: 365 days.
+    tags: [logging, monitoring, audit, opensearch, cloudtrail]
+
+  - id: secrets-manager
+    name: Secrets and Key Management
+    type: security_service
+    owner: Security Engineering Team
+    description: >
+      AWS Secrets Manager and KMS for secrets rotation and envelope
+      encryption.  All service credentials retrieved at runtime; no
+      hard-coded secrets permitted.
+    tags: [secrets, kms, encryption, key-management]

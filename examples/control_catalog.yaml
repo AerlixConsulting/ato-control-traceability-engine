@@ -1,0 +1,197 @@
+# Control Catalog — NIST SP 800-53 Rev 5 Subset
+# ATO Control Traceability Engine — Example
+# SPDX-License-Identifier: Apache-2.0
+#
+# This catalog defines a representative subset of NIST SP 800-53 Rev 5 controls
+# mapped to system components defined in system_inventory.yaml.
+
+catalog:
+  source: NIST SP 800-53 Rev 5
+  baseline: moderate
+  generated: "2025-01-15"
+
+  controls:
+
+    # ── Access Control ─────────────────────────────────────────────────────────
+    AC-1:
+      title: Access Control Policy and Procedures
+      family: Access Control
+      description: >
+        Develop, document, disseminate, review, and update an access control
+        policy that addresses purpose, scope, roles, responsibilities, management
+        commitment, coordination among organizational entities, and compliance.
+      baseline: [low, moderate, high]
+      component_mapping: [auth-service, api-gateway]
+
+    AC-2:
+      title: Account Management
+      family: Access Control
+      description: >
+        Manage information system accounts, including establishing, activating,
+        modifying, reviewing, disabling, and removing accounts.  Implement
+        automated mechanisms to support account management.
+      baseline: [low, moderate, high]
+      component_mapping: [auth-service, api-gateway]
+
+    AC-3:
+      title: Access Enforcement
+      family: Access Control
+      description: >
+        Enforce approved authorizations for logical access to information and
+        system resources in accordance with applicable access control policies.
+      baseline: [low, moderate, high]
+      component_mapping: [auth-service, api-gateway, analytics-service]
+
+    AC-17:
+      title: Remote Access
+      family: Access Control
+      description: >
+        Establish and document usage restrictions, configuration/connection
+        requirements, and implementation guidance for each type of remote access.
+        Authorize each type of remote access prior to allowing such connections.
+      baseline: [low, moderate, high]
+      component_mapping: [api-gateway, web-frontend]
+
+    # ── Audit and Accountability ───────────────────────────────────────────────
+    AU-2:
+      title: Event Logging
+      family: Audit and Accountability
+      description: >
+        Identify the types of events that the system is capable of logging in
+        support of the audit function.  Coordinate the event logging function
+        with other organizations requiring audit-related information.
+      baseline: [low, moderate, high]
+      component_mapping: [log-aggregator, api-gateway, auth-service]
+
+    AU-3:
+      title: Content of Audit Records
+      family: Audit and Accountability
+      description: >
+        Ensure that audit records contain sufficient information to identify
+        what events occurred, who or what initiated them, and the outcome.
+      baseline: [low, moderate, high]
+      component_mapping: [log-aggregator]
+
+    AU-9:
+      title: Protection of Audit Information
+      family: Audit and Accountability
+      description: >
+        Protect audit information and audit tools from unauthorized access,
+        modification, and deletion.
+      baseline: [moderate, high]
+      component_mapping: [log-aggregator, secrets-manager]
+
+    # ── Configuration Management ───────────────────────────────────────────────
+    CM-2:
+      title: Baseline Configuration
+      family: Configuration Management
+      description: >
+        Develop, document, and maintain under configuration control a current
+        baseline configuration of the information system.
+      baseline: [low, moderate, high]
+      component_mapping: [api-gateway, analytics-service, primary-db, data-warehouse]
+
+    CM-6:
+      title: Configuration Settings
+      family: Configuration Management
+      description: >
+        Establish and document configuration settings for information technology
+        products employed within the information system that reflect the most
+        restrictive mode consistent with operational requirements.
+      baseline: [low, moderate, high]
+      component_mapping: [api-gateway, analytics-service, primary-db]
+
+    CM-8:
+      title: System Component Inventory
+      family: Configuration Management
+      description: >
+        Develop and document an inventory of system components that accurately
+        reflects the current system, includes all components within the
+        authorization boundary, and is available for review and audit.
+      baseline: [low, moderate, high]
+      component_mapping:
+        - web-frontend
+        - api-gateway
+        - auth-service
+        - analytics-service
+        - data-warehouse
+        - primary-db
+        - log-aggregator
+        - secrets-manager
+
+    # ── Identification and Authentication ──────────────────────────────────────
+    IA-2:
+      title: Identification and Authentication (Organizational Users)
+      family: Identification and Authentication
+      description: >
+        Uniquely identify and authenticate organizational users and associate
+        that unique identification with processes acting on behalf of those users.
+        Implement MFA for access to privileged accounts and non-privileged accounts.
+      baseline: [low, moderate, high]
+      component_mapping: [auth-service]
+
+    IA-5:
+      title: Authenticator Management
+      family: Identification and Authentication
+      description: >
+        Manage information system authenticators by verifying, as part of
+        initial authenticator distribution, the identity of the individual,
+        group, role, or device receiving the authenticator.
+      baseline: [low, moderate, high]
+      component_mapping: [auth-service, secrets-manager]
+
+    # ── System and Communications Protection ──────────────────────────────────
+    SC-8:
+      title: Transmission Confidentiality and Integrity
+      family: System and Communications Protection
+      description: >
+        Implement cryptographic mechanisms to prevent unauthorized disclosure
+        of information and detect changes to information during transmission.
+      baseline: [moderate, high]
+      component_mapping: [api-gateway, web-frontend, auth-service]
+
+    SC-28:
+      title: Protection of Information at Rest
+      family: System and Communications Protection
+      description: >
+        Implement cryptographic mechanisms to prevent unauthorized disclosure
+        and modification of information at rest.
+      baseline: [moderate, high]
+      component_mapping: [primary-db, data-warehouse, secrets-manager]
+
+    # ── System and Information Integrity ──────────────────────────────────────
+    SI-2:
+      title: Flaw Remediation
+      family: System and Information Integrity
+      description: >
+        Identify, report, and correct information system flaws.  Test software
+        updates related to flaw remediation for effectiveness and potential
+        side effects before installation.
+      baseline: [low, moderate, high]
+      component_mapping: [web-frontend, api-gateway, analytics-service, auth-service]
+
+    SI-7:
+      title: Software, Firmware, and Information Integrity
+      family: System and Information Integrity
+      description: >
+        Employ integrity verification tools to detect unauthorized changes to
+        software, firmware, and information.
+      baseline: [moderate, high]
+      component_mapping: [analytics-service, auth-service]
+
+    # ── Risk Assessment ────────────────────────────────────────────────────────
+    RA-5:
+      title: Vulnerability Monitoring and Scanning
+      family: Risk Assessment
+      description: >
+        Monitor and scan for vulnerabilities in the information system and
+        hosted applications on an organizationally-defined frequency or when
+        new vulnerabilities are identified.
+      baseline: [low, moderate, high]
+      component_mapping:
+        - web-frontend
+        - api-gateway
+        - auth-service
+        - analytics-service
+        - primary-db
+        - data-warehouse

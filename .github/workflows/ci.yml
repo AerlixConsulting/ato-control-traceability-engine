@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint with ruff
+        run: |
+          ruff check src/ tests/
+
+      - name: Run tests
+        run: |
+          pytest -q
+
+      - name: Run atotrace trace (integration smoke test)
+        run: |
+          atotrace trace \
+            --inventory examples/system_inventory.yaml \
+            --catalog   examples/control_catalog.yaml \
+            --evidence  examples/evidence \
+            --matrix    /tmp/smoke-matrix.json \
+            --graph     /tmp/smoke-graph.mmd
+          python -c "
+          import json, sys
+          d = json.load(open('/tmp/smoke-matrix.json'))
+          assert d['summary']['total_components'] > 0, 'no components'
+          assert d['summary']['total_controls'] > 0, 'no controls'
+          assert d['summary']['total_links'] > 0, 'no links'
+          print('Smoke test passed:', d['summary'])
+          "

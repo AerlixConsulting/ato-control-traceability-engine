@@ -1,0 +1,15 @@
+# Evidence Artifact Metadata — Vulnerability Scan Results
+# SPDX-License-Identifier: Apache-2.0
+
+id: ra-5-vuln-scan-q1-2025
+title: Automated Vulnerability Scan Results — Q1 2025
+type: test_result
+path: evidence/ra-5-vuln-scan-q1-2025.json
+description: >
+  Container and host vulnerability scan using Amazon Inspector v2.
+  Findings exported 2025-03-13.  Critical and High findings: 0 open.
+  Medium findings (7) assigned to remediation backlog with target dates
+  within SLA.  Full report in evidence artifact.
+control_ids: [RA-5, SI-2, SI-7]
+component_ids: [web-frontend, api-gateway, auth-service, analytics-service]
+date_collected: "2025-03-13"

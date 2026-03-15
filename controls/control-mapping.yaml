@@ -1,0 +1,111 @@
+# Control Mapping — atoevidence package format
+# ATO Control Traceability Engine
+# SPDX-License-Identifier: Apache-2.0
+#
+# This file is consumed by the `atoevidence` CLI (atoevidence validate /
+# build-index / status-report / freshness / oscal / bundle).
+#
+# Each control entry references implementation documentation, evidence
+# artifacts, and monitoring records using paths relative to the repository root.
+
+controls:
+
+  AC-1:
+    name: Access Control Policy and Procedures
+    owner: Security Engineering Team
+    review_frequency_days: 365
+    implementation: docs/design-decisions.md
+    evidence:
+      - examples/evidence/ac-2-account-audit.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  AC-2:
+    name: Account Management
+    owner: Security Engineering Team
+    review_frequency_days: 90
+    implementation: docs/design-decisions.md
+    evidence:
+      - examples/evidence/ac-2-account-audit.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  AC-3:
+    name: Access Enforcement
+    owner: Security Engineering Team
+    review_frequency_days: 90
+    implementation: docs/design-decisions.md
+    evidence:
+      - examples/evidence/ac-2-account-audit.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  AU-2:
+    name: Event Logging
+    owner: Operations Team
+    review_frequency_days: 30
+    implementation: docs/architecture-overview.md
+    evidence:
+      - examples/evidence/au-2-log-review.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  AU-3:
+    name: Content of Audit Records
+    owner: Operations Team
+    review_frequency_days: 30
+    implementation: docs/architecture-overview.md
+    evidence:
+      - examples/evidence/au-2-log-review.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  IA-2:
+    name: Identification and Authentication (Organizational Users)
+    owner: Security Engineering Team
+    review_frequency_days: 90
+    implementation: docs/design-decisions.md
+    evidence:
+      - examples/evidence/ia-2-mfa-test-results.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  SC-8:
+    name: Transmission Confidentiality and Integrity
+    owner: Platform Engineering Team
+    review_frequency_days: 180
+    implementation: docs/architecture-overview.md
+    evidence:
+      - examples/evidence/sc-8-tls-scan.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  SC-28:
+    name: Protection of Information at Rest
+    owner: Data Engineering Team
+    review_frequency_days: 180
+    implementation: docs/architecture-overview.md
+    evidence:
+      - examples/evidence/sc-28-encryption-verification.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  RA-5:
+    name: Vulnerability Monitoring and Scanning
+    owner: Security Engineering Team
+    review_frequency_days: 30
+    implementation: docs/architecture-overview.md
+    evidence:
+      - examples/evidence/ra-5-vuln-scan.yaml
+    monitoring:
+      - docs/use-cases.md
+
+  SI-2:
+    name: Flaw Remediation
+    owner: Platform Engineering Team
+    review_frequency_days: 30
+    implementation: docs/design-decisions.md
+    evidence:
+      - examples/evidence/ra-5-vuln-scan.yaml
+    monitoring:
+      - docs/use-cases.md

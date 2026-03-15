@@ -1,0 +1,853 @@
+{
+  "system_id": "ato-demo-system",
+  "system_name": "ATO Demo Information System \u2014 Healthcare Analytics Platform",
+  "generated": "2026-03-15T22:54:45Z",
+  "summary": {
+    "total_components": 8,
+    "total_controls": 17,
+    "total_links": 51,
+    "total_evidence_artifacts": 6,
+    "implemented": 24,
+    "partial": 27,
+    "not_implemented": 0
+  },
+  "components": [
+    {
+      "id": "web-frontend",
+      "name": "Web Application Frontend",
+      "type": "web_application",
+      "owner": "Platform Engineering Team",
+      "description": "React-based single-page application served via CloudFront CDN. Handles all user interactions with the analytics dashboard.",
+      "tags": [
+        "frontend",
+        "public-facing",
+        "ui",
+        "cloudfront"
+      ]
+    },
+    {
+      "id": "api-gateway",
+      "name": "API Gateway",
+      "type": "api_gateway",
+      "owner": "Platform Engineering Team",
+      "description": "AWS API Gateway (REST) acting as the single ingress point for all backend service calls.  Enforces TLS 1.2+, rate limiting, and request validation.",
+      "tags": [
+        "network",
+        "api",
+        "ingress",
+        "tls"
+      ]
+    },
+    {
+      "id": "auth-service",
+      "name": "Authentication and Authorization Service",
+      "type": "microservice",
+      "owner": "Security Engineering Team",
+      "description": "OAuth 2.0 / OIDC authentication microservice backed by AWS Cognito. Issues short-lived JWTs; enforces MFA for all privileged accounts.",
+      "tags": [
+        "auth",
+        "identity",
+        "oauth2",
+        "mfa",
+        "jwt"
+      ]
+    },
+    {
+      "id": "analytics-service",
+      "name": "Analytics Processing Service",
+      "type": "microservice",
+      "owner": "Data Engineering Team",
+      "description": "Python FastAPI service that executes analytical queries against the data warehouse.  Runs in an isolated ECS Fargate task with no direct internet egress.",
+      "tags": [
+        "analytics",
+        "fargate",
+        "backend"
+      ]
+    },
+    {
+      "id": "data-warehouse",
+      "name": "Redshift Data Warehouse",
+      "type": "database",
+      "owner": "Data Engineering Team",
+      "description": "Amazon Redshift cluster storing de-identified PHI aggregates. Encrypted at rest with AWS KMS CMK; VPC-private; access via IAM roles.",
+      "tags": [
+        "data",
+        "storage",
+        "redshift",
+        "encrypted",
+        "phi-adjacent"
+      ]
+    },
+    {
+      "id": "primary-db",
+      "name": "PostgreSQL Application Database",
+      "type": "database",
+      "owner": "Platform Engineering Team",
+      "description": "Amazon RDS PostgreSQL 15 instance holding application state. Multi-AZ deployment; encrypted at rest; daily automated backups.",
+      "tags": [
+        "data",
+        "storage",
+        "rds",
+        "postgresql",
+        "encrypted",
+        "backup"
+      ]
+    },
+    {
+      "id": "log-aggregator",
+      "name": "Centralised Log Aggregation Service",
+      "type": "monitoring",
+      "owner": "Operations Team",
+      "description": "OpenSearch-based log aggregation (AWS OpenSearch Service). Collects VPC flow logs, CloudTrail events, application logs, and container stdout/stderr.  Retention: 365 days.",
+      "tags": [
+        "logging",
+        "monitoring",
+        "audit",
+        "opensearch",
+        "cloudtrail"
+      ]
+    },
+    {
+      "id": "secrets-manager",
+      "name": "Secrets and Key Management",
+      "type": "security_service",
+      "owner": "Security Engineering Team",
+      "description": "AWS Secrets Manager and KMS for secrets rotation and envelope encryption.  All service credentials retrieved at runtime; no hard-coded secrets permitted.",
+      "tags": [
+        "secrets",
+        "kms",
+        "encryption",
+        "key-management"
+      ]
+    }
+  ],
+  "controls": [
+    {
+      "id": "AC-1",
+      "title": "Access Control Policy and Procedures",
+      "family": "Access Control",
+      "description": "Develop, document, disseminate, review, and update an access control policy that addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "auth-service",
+        "api-gateway"
+      ]
+    },
+    {
+      "id": "AC-2",
+      "title": "Account Management",
+      "family": "Access Control",
+      "description": "Manage information system accounts, including establishing, activating, modifying, reviewing, disabling, and removing accounts.  Implement automated mechanisms to support account management.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "auth-service",
+        "api-gateway"
+      ]
+    },
+    {
+      "id": "AC-3",
+      "title": "Access Enforcement",
+      "family": "Access Control",
+      "description": "Enforce approved authorizations for logical access to information and system resources in accordance with applicable access control policies.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "auth-service",
+        "api-gateway",
+        "analytics-service"
+      ]
+    },
+    {
+      "id": "AC-17",
+      "title": "Remote Access",
+      "family": "Access Control",
+      "description": "Establish and document usage restrictions, configuration/connection requirements, and implementation guidance for each type of remote access. Authorize each type of remote access prior to allowing such connections.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "api-gateway",
+        "web-frontend"
+      ]
+    },
+    {
+      "id": "AU-2",
+      "title": "Event Logging",
+      "family": "Audit and Accountability",
+      "description": "Identify the types of events that the system is capable of logging in support of the audit function.  Coordinate the event logging function with other organizations requiring audit-related information.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "log-aggregator",
+        "api-gateway",
+        "auth-service"
+      ]
+    },
+    {
+      "id": "AU-3",
+      "title": "Content of Audit Records",
+      "family": "Audit and Accountability",
+      "description": "Ensure that audit records contain sufficient information to identify what events occurred, who or what initiated them, and the outcome.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "log-aggregator"
+      ]
+    },
+    {
+      "id": "AU-9",
+      "title": "Protection of Audit Information",
+      "family": "Audit and Accountability",
+      "description": "Protect audit information and audit tools from unauthorized access, modification, and deletion.",
+      "baseline": [
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "log-aggregator",
+        "secrets-manager"
+      ]
+    },
+    {
+      "id": "CM-2",
+      "title": "Baseline Configuration",
+      "family": "Configuration Management",
+      "description": "Develop, document, and maintain under configuration control a current baseline configuration of the information system.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "api-gateway",
+        "analytics-service",
+        "primary-db",
+        "data-warehouse"
+      ]
+    },
+    {
+      "id": "CM-6",
+      "title": "Configuration Settings",
+      "family": "Configuration Management",
+      "description": "Establish and document configuration settings for information technology products employed within the information system that reflect the most restrictive mode consistent with operational requirements.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "api-gateway",
+        "analytics-service",
+        "primary-db"
+      ]
+    },
+    {
+      "id": "CM-8",
+      "title": "System Component Inventory",
+      "family": "Configuration Management",
+      "description": "Develop and document an inventory of system components that accurately reflects the current system, includes all components within the authorization boundary, and is available for review and audit.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "web-frontend",
+        "api-gateway",
+        "auth-service",
+        "analytics-service",
+        "data-warehouse",
+        "primary-db",
+        "log-aggregator",
+        "secrets-manager"
+      ]
+    },
+    {
+      "id": "IA-2",
+      "title": "Identification and Authentication (Organizational Users)",
+      "family": "Identification and Authentication",
+      "description": "Uniquely identify and authenticate organizational users and associate that unique identification with processes acting on behalf of those users. Implement MFA for access to privileged accounts and non-privileged accounts.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "auth-service"
+      ]
+    },
+    {
+      "id": "IA-5",
+      "title": "Authenticator Management",
+      "family": "Identification and Authentication",
+      "description": "Manage information system authenticators by verifying, as part of initial authenticator distribution, the identity of the individual, group, role, or device receiving the authenticator.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "auth-service",
+        "secrets-manager"
+      ]
+    },
+    {
+      "id": "SC-8",
+      "title": "Transmission Confidentiality and Integrity",
+      "family": "System and Communications Protection",
+      "description": "Implement cryptographic mechanisms to prevent unauthorized disclosure of information and detect changes to information during transmission.",
+      "baseline": [
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "api-gateway",
+        "web-frontend",
+        "auth-service"
+      ]
+    },
+    {
+      "id": "SC-28",
+      "title": "Protection of Information at Rest",
+      "family": "System and Communications Protection",
+      "description": "Implement cryptographic mechanisms to prevent unauthorized disclosure and modification of information at rest.",
+      "baseline": [
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "primary-db",
+        "data-warehouse",
+        "secrets-manager"
+      ]
+    },
+    {
+      "id": "SI-2",
+      "title": "Flaw Remediation",
+      "family": "System and Information Integrity",
+      "description": "Identify, report, and correct information system flaws.  Test software updates related to flaw remediation for effectiveness and potential side effects before installation.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "web-frontend",
+        "api-gateway",
+        "analytics-service",
+        "auth-service"
+      ]
+    },
+    {
+      "id": "SI-7",
+      "title": "Software, Firmware, and Information Integrity",
+      "family": "System and Information Integrity",
+      "description": "Employ integrity verification tools to detect unauthorized changes to software, firmware, and information.",
+      "baseline": [
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "analytics-service",
+        "auth-service"
+      ]
+    },
+    {
+      "id": "RA-5",
+      "title": "Vulnerability Monitoring and Scanning",
+      "family": "Risk Assessment",
+      "description": "Monitor and scan for vulnerabilities in the information system and hosted applications on an organizationally-defined frequency or when new vulnerabilities are identified.",
+      "baseline": [
+        "low",
+        "moderate",
+        "high"
+      ],
+      "component_mapping": [
+        "web-frontend",
+        "api-gateway",
+        "auth-service",
+        "analytics-service",
+        "primary-db",
+        "data-warehouse"
+      ]
+    }
+  ],
+  "trace_links": [
+    {
+      "component_id": "auth-service",
+      "control_id": "AC-1",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "AC-1",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "AC-2",
+      "evidence_ids": [
+        "ac-2-account-audit-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "AC-2",
+      "evidence_ids": [
+        "ac-2-account-audit-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "AC-3",
+      "evidence_ids": [
+        "ac-2-account-audit-q1-2025",
+        "ia-2-mfa-test-results-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "AC-3",
+      "evidence_ids": [
+        "ac-2-account-audit-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "analytics-service",
+      "control_id": "AC-3",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "AC-17",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "web-frontend",
+      "control_id": "AC-17",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "log-aggregator",
+      "control_id": "AU-2",
+      "evidence_ids": [
+        "au-2-log-review-feb-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "AU-2",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "AU-2",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "log-aggregator",
+      "control_id": "AU-3",
+      "evidence_ids": [
+        "au-2-log-review-feb-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "log-aggregator",
+      "control_id": "AU-9",
+      "evidence_ids": [
+        "au-2-log-review-feb-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "secrets-manager",
+      "control_id": "AU-9",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "CM-2",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "analytics-service",
+      "control_id": "CM-2",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "primary-db",
+      "control_id": "CM-2",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "data-warehouse",
+      "control_id": "CM-2",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "CM-6",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "analytics-service",
+      "control_id": "CM-6",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "primary-db",
+      "control_id": "CM-6",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "web-frontend",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "analytics-service",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "data-warehouse",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "primary-db",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "log-aggregator",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "secrets-manager",
+      "control_id": "CM-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "IA-2",
+      "evidence_ids": [
+        "ac-2-account-audit-q1-2025",
+        "ia-2-mfa-test-results-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "IA-5",
+      "evidence_ids": [
+        "ia-2-mfa-test-results-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "secrets-manager",
+      "control_id": "IA-5",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "SC-8",
+      "evidence_ids": [
+        "sc-8-tls-scan-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "web-frontend",
+      "control_id": "SC-8",
+      "evidence_ids": [
+        "sc-8-tls-scan-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "SC-8",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "primary-db",
+      "control_id": "SC-28",
+      "evidence_ids": [
+        "sc-28-encryption-verification-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "data-warehouse",
+      "control_id": "SC-28",
+      "evidence_ids": [
+        "sc-28-encryption-verification-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "secrets-manager",
+      "control_id": "SC-28",
+      "evidence_ids": [
+        "sc-28-encryption-verification-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "web-frontend",
+      "control_id": "SI-2",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "SI-2",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "analytics-service",
+      "control_id": "SI-2",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "SI-2",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "analytics-service",
+      "control_id": "SI-7",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "SI-7",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "web-frontend",
+      "control_id": "RA-5",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "api-gateway",
+      "control_id": "RA-5",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "auth-service",
+      "control_id": "RA-5",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "analytics-service",
+      "control_id": "RA-5",
+      "evidence_ids": [
+        "ra-5-vuln-scan-q1-2025"
+      ],
+      "status": "implemented"
+    },
+    {
+      "component_id": "primary-db",
+      "control_id": "RA-5",
+      "evidence_ids": [],
+      "status": "partial"
+    },
+    {
+      "component_id": "data-warehouse",
+      "control_id": "RA-5",
+      "evidence_ids": [],
+      "status": "partial"
+    }
+  ],
+  "evidence_artifacts": [
+    {
+      "id": "ac-2-account-audit-q1-2025",
+      "title": "Account Management Quarterly Audit Report \u2014 Q1 2025",
+      "type": "test_result",
+      "path": "evidence/ac-2-account-audit-q1-2025.pdf",
+      "description": "Quarterly audit of all user accounts in AWS Cognito and the API Gateway usage plans.  Verified that dormant accounts (>90 days inactive) were disabled, and that all privileged accounts have active MFA enrolled. Reviewed by Security Engineering Team on 2025-03-14.",
+      "control_ids": [
+        "AC-2",
+        "AC-3",
+        "IA-2"
+      ],
+      "component_ids": [
+        "auth-service",
+        "api-gateway"
+      ],
+      "date_collected": "2025-03-14"
+    },
+    {
+      "id": "au-2-log-review-feb-2025",
+      "title": "Centralised Log Review \u2014 February 2025",
+      "type": "log_sample",
+      "path": "evidence/au-2-log-review-feb-2025.md",
+      "description": "Monthly review of OpenSearch log dashboards confirming that VPC flow logs, CloudTrail management events, and application authentication events are being captured, indexed, and retained per policy (365 days). No anomalies detected.  Reviewed 2025-02-28.",
+      "control_ids": [
+        "AU-2",
+        "AU-3",
+        "AU-9"
+      ],
+      "component_ids": [
+        "log-aggregator"
+      ],
+      "date_collected": "2025-02-28"
+    },
+    {
+      "id": "ia-2-mfa-test-results-2025",
+      "title": "MFA Enforcement Penetration Test Results \u2014 2025",
+      "type": "test_result",
+      "path": "evidence/ia-2-mfa-test-results-2025.pdf",
+      "description": "Red-team exercise testing MFA bypass scenarios against AWS Cognito. All tested bypass attempts (SIM-swap simulation, TOTP replay, session fixation) were blocked.  Test conducted by contracted security assessor on 2025-02-28.  All findings closed or risk-accepted.",
+      "control_ids": [
+        "IA-2",
+        "IA-5",
+        "AC-3"
+      ],
+      "component_ids": [
+        "auth-service"
+      ],
+      "date_collected": "2025-02-28"
+    },
+    {
+      "id": "ra-5-vuln-scan-q1-2025",
+      "title": "Automated Vulnerability Scan Results \u2014 Q1 2025",
+      "type": "test_result",
+      "path": "evidence/ra-5-vuln-scan-q1-2025.json",
+      "description": "Container and host vulnerability scan using Amazon Inspector v2. Findings exported 2025-03-13.  Critical and High findings: 0 open. Medium findings (7) assigned to remediation backlog with target dates within SLA.  Full report in evidence artifact.",
+      "control_ids": [
+        "RA-5",
+        "SI-2",
+        "SI-7"
+      ],
+      "component_ids": [
+        "web-frontend",
+        "api-gateway",
+        "auth-service",
+        "analytics-service"
+      ],
+      "date_collected": "2025-03-13"
+    },
+    {
+      "id": "sc-28-encryption-verification-2025",
+      "title": "Encryption-at-Rest Verification \u2014 RDS and Redshift",
+      "type": "configuration",
+      "path": "evidence/sc-28-encryption-verification-2025.md",
+      "description": "Verification that AWS RDS PostgreSQL and Redshift cluster storage encryption is enabled using customer-managed KMS keys (CMK).  AWS Config rule rds-storage-encrypted and redshift-cluster-kms-enabled confirmed COMPLIANT on 2025-03-12.  Key rotation policy verified active (annual rotation).",
+      "control_ids": [
+        "SC-28"
+      ],
+      "component_ids": [
+        "primary-db",
+        "data-warehouse",
+        "secrets-manager"
+      ],
+      "date_collected": "2025-03-12"
+    },
+    {
+      "id": "sc-8-tls-scan-2025",
+      "title": "TLS Configuration Scan Report \u2014 API Gateway and CloudFront",
+      "type": "configuration",
+      "path": "evidence/sc-8-tls-scan-2025.json",
+      "description": "Automated TLS/SSL configuration scan using sslyze 5.x against the API Gateway regional endpoint and CloudFront distribution.  Confirmed TLS 1.2+ enforced; TLS 1.0 and 1.1 disabled; certificate chain valid; HSTS header present on all responses.  Scan run 2025-03-10 via CI pipeline.",
+      "control_ids": [
+        "SC-8"
+      ],
+      "component_ids": [
+        "api-gateway",
+        "web-frontend"
+      ],
+      "date_collected": "2025-03-10"
+    }
+  ]
+}

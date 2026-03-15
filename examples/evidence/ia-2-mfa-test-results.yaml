@@ -1,0 +1,15 @@
+# Evidence Artifact Metadata — MFA Enforcement Test Results
+# SPDX-License-Identifier: Apache-2.0
+
+id: ia-2-mfa-test-results-2025
+title: MFA Enforcement Penetration Test Results — 2025
+type: test_result
+path: evidence/ia-2-mfa-test-results-2025.pdf
+description: >
+  Red-team exercise testing MFA bypass scenarios against AWS Cognito.
+  All tested bypass attempts (SIM-swap simulation, TOTP replay, session
+  fixation) were blocked.  Test conducted by contracted security assessor
+  on 2025-02-28.  All findings closed or risk-accepted.
+control_ids: [IA-2, IA-5, AC-3]
+component_ids: [auth-service]
+date_collected: "2025-02-28"
