@@ -1,0 +1,150 @@
+%%{ init: { 'theme': 'base', 'themeVariables': { 'fontSize': '14px' } } }%%
+flowchart LR
+
+    %% ── Subgraph: Components ─────────────────────────────────────
+    subgraph Components
+        web_frontend['web-frontend\\nWeb Application…']
+        api_gateway['api-gateway\\nAPI Gateway']
+        auth_service['auth-service\\nAuthentication …']
+        analytics_service['analytics-service\\nAnalytics …']
+        data_warehouse['data-warehouse\\nRedshift Data…']
+        primary_db['primary-db\\nPostgreSQL Applic…']
+        log_aggregator['log-aggregator\\nCentralised L…']
+        secrets_manager['secrets-manager\\nSecrets and …']
+    end
+
+    %% ── Subgraph: Controls ──────────────────────────────────────
+    subgraph Controls
+        AC_1(['AC-1\\nAccess Control Policy a…'])
+        AC_2(['AC-2\\nAccount Management'])
+        AC_3(['AC-3\\nAccess Enforcement'])
+        AC_17(['AC-17\\nRemote Access'])
+        AU_2(['AU-2\\nEvent Logging'])
+        AU_3(['AU-3\\nContent of Audit Records'])
+        AU_9(['AU-9\\nProtection of Audit Inf…'])
+        CM_2(['CM-2\\nBaseline Configuration'])
+        CM_6(['CM-6\\nConfiguration Settings'])
+        CM_8(['CM-8\\nSystem Component Invent…'])
+        IA_2(['IA-2\\nIdentification and Auth…'])
+        IA_5(['IA-5\\nAuthenticator Management'])
+        SC_8(['SC-8\\nTransmission Confidenti…'])
+        SC_28(['SC-28\\nProtection of Informat…'])
+        SI_2(['SI-2\\nFlaw Remediation'])
+        SI_7(['SI-7\\nSoftware, Firmware, and…'])
+        RA_5(['RA-5\\nVulnerability Monitorin…'])
+    end
+
+    %% ── Subgraph: Evidence ──────────────────────────────────────
+    subgraph Evidence
+        ac_2_account_audit_q1_2025{'test_result\nAccount Manageme…'}
+        au_2_log_review_feb_2025{'log_sample\nCentralised Log R…'}
+        ia_2_mfa_test_results_2025{'test_result\nMFA Enforcement …'}
+        ra_5_vuln_scan_q1_2025{'test_result\nAutomated Vulner…'}
+        sc_28_encryption_verification_2025{'configuration\nEncryption-at-…'}
+        sc_8_tls_scan_2025{'configuration\nTLS Configurat…'}
+    end
+
+    %% ── Edges: Component → Control ──────────────────────────
+    auth_service --> AC_1
+    api_gateway --> AC_1
+    auth_service --> AC_2
+    api_gateway --> AC_2
+    auth_service --> AC_3
+    api_gateway --> AC_3
+    analytics_service --> AC_3
+    api_gateway --> AC_17
+    web_frontend --> AC_17
+    log_aggregator --> AU_2
+    api_gateway --> AU_2
+    auth_service --> AU_2
+    log_aggregator --> AU_3
+    log_aggregator --> AU_9
+    secrets_manager --> AU_9
+    api_gateway --> CM_2
+    analytics_service --> CM_2
+    primary_db --> CM_2
+    data_warehouse --> CM_2
+    api_gateway --> CM_6
+    analytics_service --> CM_6
+    primary_db --> CM_6
+    web_frontend --> CM_8
+    api_gateway --> CM_8
+    auth_service --> CM_8
+    analytics_service --> CM_8
+    data_warehouse --> CM_8
+    primary_db --> CM_8
+    log_aggregator --> CM_8
+    secrets_manager --> CM_8
+    auth_service --> IA_2
+    auth_service --> IA_5
+    secrets_manager --> IA_5
+    api_gateway --> SC_8
+    web_frontend --> SC_8
+    auth_service --> SC_8
+    primary_db --> SC_28
+    data_warehouse --> SC_28
+    secrets_manager --> SC_28
+    web_frontend --> SI_2
+    api_gateway --> SI_2
+    analytics_service --> SI_2
+    auth_service --> SI_2
+    analytics_service --> SI_7
+    auth_service --> SI_7
+    web_frontend --> RA_5
+    api_gateway --> RA_5
+    auth_service --> RA_5
+    analytics_service --> RA_5
+    primary_db --> RA_5
+    data_warehouse --> RA_5
+
+    %% ── Edges: Control → Evidence ──────────────────────────
+    AC_2 --> ac_2_account_audit_q1_2025
+    AC_3 --> ac_2_account_audit_q1_2025
+    AC_3 --> ia_2_mfa_test_results_2025
+    AU_2 --> au_2_log_review_feb_2025
+    AU_3 --> au_2_log_review_feb_2025
+    AU_9 --> au_2_log_review_feb_2025
+    IA_2 --> ac_2_account_audit_q1_2025
+    IA_2 --> ia_2_mfa_test_results_2025
+    IA_5 --> ia_2_mfa_test_results_2025
+    SC_8 --> sc_8_tls_scan_2025
+    SC_28 --> sc_28_encryption_verification_2025
+    SI_2 --> ra_5_vuln_scan_q1_2025
+    SI_7 --> ra_5_vuln_scan_q1_2025
+    RA_5 --> ra_5_vuln_scan_q1_2025
+
+    %% ── Styles ──────────────────────────────────────────────────
+    classDef component fill:#4A90D9,stroke:#2C5F8A,color:#fff
+    classDef control  fill:#27AE60,stroke:#1A7A42,color:#fff
+    classDef evidence fill:#E67E22,stroke:#B85C0A,color:#fff
+    class web_frontend component
+    class api_gateway component
+    class auth_service component
+    class analytics_service component
+    class data_warehouse component
+    class primary_db component
+    class log_aggregator component
+    class secrets_manager component
+    class AC_1 control
+    class AC_2 control
+    class AC_3 control
+    class AC_17 control
+    class AU_2 control
+    class AU_3 control
+    class AU_9 control
+    class CM_2 control
+    class CM_6 control
+    class CM_8 control
+    class IA_2 control
+    class IA_5 control
+    class SC_8 control
+    class SC_28 control
+    class SI_2 control
+    class SI_7 control
+    class RA_5 control
+    class ac_2_account_audit_q1_2025 evidence
+    class au_2_log_review_feb_2025 evidence
+    class ia_2_mfa_test_results_2025 evidence
+    class ra_5_vuln_scan_q1_2025 evidence
+    class sc_28_encryption_verification_2025 evidence
+    class sc_8_tls_scan_2025 evidence

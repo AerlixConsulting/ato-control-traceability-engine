@@ -1,0 +1,15 @@
+# Evidence Artifact Metadata — TLS Configuration Scan
+# SPDX-License-Identifier: Apache-2.0
+
+id: sc-8-tls-scan-2025
+title: TLS Configuration Scan Report — API Gateway and CloudFront
+type: configuration
+path: evidence/sc-8-tls-scan-2025.json
+description: >
+  Automated TLS/SSL configuration scan using sslyze 5.x against the API
+  Gateway regional endpoint and CloudFront distribution.  Confirmed TLS 1.2+
+  enforced; TLS 1.0 and 1.1 disabled; certificate chain valid; HSTS header
+  present on all responses.  Scan run 2025-03-10 via CI pipeline.
+control_ids: [SC-8]
+component_ids: [api-gateway, web-frontend]
+date_collected: "2025-03-10"

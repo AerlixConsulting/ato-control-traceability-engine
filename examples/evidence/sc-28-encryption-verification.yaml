@@ -1,0 +1,15 @@
+# Evidence Artifact Metadata — Encryption at Rest Verification
+# SPDX-License-Identifier: Apache-2.0
+
+id: sc-28-encryption-verification-2025
+title: Encryption-at-Rest Verification — RDS and Redshift
+type: configuration
+path: evidence/sc-28-encryption-verification-2025.md
+description: >
+  Verification that AWS RDS PostgreSQL and Redshift cluster storage encryption
+  is enabled using customer-managed KMS keys (CMK).  AWS Config rule
+  rds-storage-encrypted and redshift-cluster-kms-enabled confirmed COMPLIANT
+  on 2025-03-12.  Key rotation policy verified active (annual rotation).
+control_ids: [SC-28]
+component_ids: [primary-db, data-warehouse, secrets-manager]
+date_collected: "2025-03-12"

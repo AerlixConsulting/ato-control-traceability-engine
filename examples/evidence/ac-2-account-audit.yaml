@@ -1,0 +1,15 @@
+# Evidence Artifact Metadata — Account Management Audit
+# SPDX-License-Identifier: Apache-2.0
+
+id: ac-2-account-audit-q1-2025
+title: Account Management Quarterly Audit Report — Q1 2025
+type: test_result
+path: evidence/ac-2-account-audit-q1-2025.pdf
+description: >
+  Quarterly audit of all user accounts in AWS Cognito and the API Gateway
+  usage plans.  Verified that dormant accounts (>90 days inactive) were
+  disabled, and that all privileged accounts have active MFA enrolled.
+  Reviewed by Security Engineering Team on 2025-03-14.
+control_ids: [AC-2, AC-3, IA-2]
+component_ids: [auth-service, api-gateway]
+date_collected: "2025-03-14"

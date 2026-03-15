@@ -1,0 +1,15 @@
+# Evidence Artifact Metadata — Audit Log Review
+# SPDX-License-Identifier: Apache-2.0
+
+id: au-2-log-review-feb-2025
+title: Centralised Log Review — February 2025
+type: log_sample
+path: evidence/au-2-log-review-feb-2025.md
+description: >
+  Monthly review of OpenSearch log dashboards confirming that VPC flow logs,
+  CloudTrail management events, and application authentication events are
+  being captured, indexed, and retained per policy (365 days).
+  No anomalies detected.  Reviewed 2025-02-28.
+control_ids: [AU-2, AU-3, AU-9]
+component_ids: [log-aggregator]
+date_collected: "2025-02-28"
